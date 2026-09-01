@@ -39,5 +39,5 @@ class 2
 
 
     
-
+jsonwebtoken generate id card for user based on theire role it will generate unique string for user profile
 

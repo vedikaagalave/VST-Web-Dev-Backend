@@ -256,6 +256,7 @@ let cors = require('cors')
 let app = express()
 
 let User = require('./database/db.js')
+let jwt = require('jsonwebtoken')
 
 app.use(cors())
 
@@ -296,10 +297,29 @@ app.post('/login',async(req,res) => {
     if(!validPass){
         res.send("dub ke mar ja kuch nhi ho sakta tera")
     }
-    res.send("aap toh bade tez ho")
+    let token = jwt.sign({email:findData.email,role:findData.role},"secrate key")
+    console.log(token,"user token generated")
+
+    res.send({msg:"done",token:token})
+})
+
+let auth = (req,res,next)=>{
+    let token = req.headers.authorization;
+    console.log(token,"tokeen")
+
+    if(!token){
+        return res.send("kaun ho aap")
+    }
+    let decode = jwt.verify(token,"secrate key")
+    console.log(decode,"ise");
+    next();
+}
+app.get('/api',auth, (req,res)=> {
+    res.send("founddddddddd")
 })
 
 app.listen(4000,()=> {
     console.log("server running.......")
 
 })
+
