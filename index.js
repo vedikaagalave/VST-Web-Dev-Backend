@@ -246,10 +246,19 @@
 
 
 let express = require('express')
+
 let mongoose = require('mongoose')
-let bcryptjs=  require('bcryptjs')
+
+let bcryptjs = require('bcryptjs')
+
+let cors = require('cors')
+
 let app = express()
-let User=  require('./database/db.js')
+
+let User = require('./database/db.js')
+
+app.use(cors())
+
 app.use(express.json())
 
 mongoose.connect("mongodb://localhost:27017/").then(() => {
