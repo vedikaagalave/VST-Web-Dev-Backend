@@ -311,13 +311,34 @@ let auth = (req,res,next)=>{
         return res.send("kaun ho aap")
     }
     let decode = jwt.verify(token,"secrate key")
-    console.log(decode,"ise");
+    console.log(decode,"iseeeeeee");
+    req.user = decode;
     next();
 }
-app.get('/api',auth, (req,res)=> {
+
+let rolecheck = (role) => {
+    return (req,res,next) => {
+        // if(req.user.role !== role){
+        //     return res.send("kon hoo aap aap admin toh nhi ho")
+        // }
+        console.log(req.user,"see this");
+        next();
+    }
+
+}
+
+
+
+app.get('/api',auth, rolecheck("admin"),(req,res)=> {
     res.send("founddddddddd")
 })
 
+app.get('/admin', (req,res) => {
+    res.send("mein admin hu.....")
+})
+app.get('/user', (req,res) => {
+    res.send("mein user hu.....")
+})
 app.listen(4000,()=> {
     console.log("server running.......")
 
