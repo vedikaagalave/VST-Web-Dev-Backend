@@ -257,6 +257,8 @@ let app = express()
 
 let User = require('./database/db.js')
 let jwt = require('jsonwebtoken')
+let crypto = require('crypto')
+let {sendEmail} = require('../backend/sendemail.js')
 
 app.use(cors())
 
@@ -338,6 +340,35 @@ app.get('/admin', (req,res) => {
 })
 app.get('/user', (req,res) => {
     res.send("mein user hu.....")
+})
+
+app.post('/forget-password', async (req,res) => {
+      const { email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+  
+    const resetToken = crypto.randomBytes(20).toString('hex');
+    user.resetToken = resetToken;
+    user.resetTokenExpiry = Date.now() + 4800000; 
+    await user.save();
+
+
+   const resetUrl = `http://localhost:4000/forget-password/${resetToken}`;
+    await sendEmail(
+      user.email,
+      'yee apka password reset ho gya',
+      `Click the link below to reset your password:\n\n${resetUrl}`
+    );
+
+    res.status(200).send('bhej diya reeee');
+  } catch (error) {
+    res.status(500).send('Error sending password reset email: ' + error.message);
+  }
+
 })
 app.listen(4000,()=> {
     console.log("server running.......")
