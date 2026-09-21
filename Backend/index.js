@@ -258,7 +258,7 @@ let app = express()
 let User = require('./database/db.js')
 let jwt = require('jsonwebtoken')
 let crypto = require('crypto')
-let {sendEmail} = require('../backend/sendemail.js')
+let {sendEmail} = require('./sendemail.js')
 
 app.use(cors())
 
@@ -369,6 +369,19 @@ app.post('/forget-password', async (req,res) => {
     res.status(500).send('Error sending password reset email: ' + error.message);
   }
 
+})
+
+app.get('/error', (req,res) => {
+    try{
+        let user = null
+
+        // console.log(user.name) --- error
+        console.log("heyy!")
+        res.send("hello")
+    }
+    catch(err){
+        res.send("errroorr",err)
+    }
 })
 app.listen(4000,()=> {
     console.log("server running.......")
